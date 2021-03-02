@@ -2,10 +2,12 @@
 This script is for converting csv and modifying data to quantify features and to interpolate missing values.
 
 """
+# coding: utf-8
 import pandas as pd
 import numpy as  np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import argparse
 print('         .       ')
 print('         .       ')
 print('         .       ')
@@ -14,7 +16,16 @@ print('         .       ')
 print('         .       ')
 
 # データをpd.DataFrame形式で読み込む
-df = pd.read_csv("NN.csv", header=None)
+parser = argparse.ArgumentParser('Example program')
+parser.add_argument('-f','--file')
+f_args = parser.parse_args()
+file_to_open = f_args.file
+print(file_to_open)
+if not file_to_open:
+    df = pd.read_csv("new2.csv", encoding='UTF-8')#header=None, ヘッダの使用可否
+else:
+    df = pd.read_csv(file_to_open, encoding='UTF-8')
+print(df['Sex'])
 #df.iloc[0].to_list() 行をリストとして抽出
 #df['特徴数'].to_list()　列をリストとして抽出
 
