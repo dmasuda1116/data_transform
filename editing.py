@@ -112,4 +112,4 @@ else:
     else:
         print('invalid answer')
         exit(0)
-Bidernization(input_csv, output_csv)
+Binarization(input_csv, output_csv)
