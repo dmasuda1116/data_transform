@@ -8,6 +8,7 @@ import numpy as  np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import itertools
+import csv
 print('         .       ')
 print('         .       ')
 print(' Loading the csv ')
@@ -62,3 +63,8 @@ print('--------------------------')
 
 print(modified_data)
 print('==========================')
+
+for i in range(len(modified_data)):
+    with open('ingredient_mod.csv', 'w', encoding='Shift-JIS') as f:
+        writer = csv.writer(f, lineterminator='\n')
+        writer.writerow(modified_data[i])
