@@ -96,3 +96,4 @@
 93,Inception_v3,torchvision_inception_v3,16.41,60.9,119.4,,
 94,SqueezeNet,torchvision_squeezenet,4.73,211.4,669.9,,
 95,resnet50,torchvision_resnet50,14.04,71.2,138,,
+ 
