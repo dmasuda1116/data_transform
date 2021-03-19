@@ -1,28 +1,36 @@
 import cv2
-def f2s(V):
+import numpy as np
+import random
+
+def f2s(V):#converting float list to str list
     a=[]
     for i in range(len(V)):
         a.append(str(V[i]))
     return a
 
-def s2f(V):
+def s2f(V):#converting str list to float list
     a=[]
     for i in range(len(V)):
         a.append(float(V[i]))
     return a
 
-
-def reverse(Vs,height,width):
-    
+def reverse(Vs,height,width):#Converting the coordinates for reversing pics, flipping right to left
     Vs=s2f(Vs)
     R=[width-Vs[0]-Vs[2],Vs[1],Vs[2],Vs[3],width-Vs[4],Vs[5],width-Vs[6],Vs[7],width-Vs[8],Vs[9],width-Vs[10],Vs[11],width-Vs[12],Vs[13]]
     R=f2s(R)
     return R
-def transpose(Vs,height,width):
-    Vs=s2f(Vs)
-    T=[width-Vs[0]-Vs[2],height-Vs[1],Vs[2],Vs[3],width-Vs[4],height-Vs[5],width-Vs[6],height-Vs[7],width-Vs[8],height-Vs[9],width-Vs[10],height-Vs[11],width-Vs[12],height-Vs[13]]
-    T=f2s(T)
-    return T
+
+def noise(im, height, width):#adding noises to pics
+    # white noises
+    pts_x = np.random.randint(0, width-1 , 1000) #creating thousand random numbers between 0 and 'width-1'
+    pts_y = np.random.randint(0, height-1 , 1000)#creating thousand random numbers between 0 and 'height-1'
+    im[(pts_y,pts_x)] = (255,255,255) #note that the order is y,x (the color (255,255,255) represents white)
+
+    # black noises
+    pts_x = np.random.randint(0, width-1 , 1000)
+    pts_y = np.random.randint(0, height-1 , 1000)
+    im[(pts_y,pts_x)] = (0,0,0)
+    return im
 
 f2 = open('furuta.txt', 'r', encoding='UTF-8')
 tx=f2.read()
@@ -32,27 +40,38 @@ tx2=tx2[1:]
 print('==1==')
 print(len(tx2))
 #print((tx2[:3]))
-output_file='test_.txt'
 print('==2==')
 print(tx2[0].split()[0])
+#########################
+output_file='test_.txt'
 folder_name='new_pics/'
 io=' -1 -1 -1'
 z=' '
-for i in range(len(tx2)):
-    pic_name = tx2[i].split()[0].split('/')[1]
+#########################
+for i in range(len(tx2)):#arranging each pic
+    pic_name = tx2[i].split()[0].split('/')[1]#reading the names of pics
     im=cv2.imread(pic_name)
-    imr=cv2.flip(im, 1)
-    imt=cv2.flip(im, -1)
+    height, width, channels = im.shape[:3]
+    imr=cv2.flip(im, 1)#reversing pics, flipping right to left
+    
     print('==3==')
-    cv2.imwrite('R_' + pic_name, imr)
-    cv2.imwrite('T_' + pic_name, imt)
+    cv2.imwrite('R_' + pic_name, imr)#reversed pics
+    cv2.imwrite('W5_' + pic_name, 0.5*im)#brightness-lowered pics
+    cv2.imwrite('W15_' + pic_name, 1.5*im#brightness-increased pics
+
+    imn=noise(im,height,width)
+    imnr=noise(imr,height,width)
+    imn05=noise(0.5*im)
+    imn15=noise(1.5*im)
+    cv2.imwrite('noises' + pic_name, imn)#pics with noises
+    cv2.imwrite('Rnoises' + pic_name, imnr)#reversed pics with noises
+    cv2.imwrite('05noises' + pic_name, imn05)#brightness-lowered pics with noises
+    cv2.imwrite('15noises' + pic_name, imn15)#brightness-increased pics with noises
 
     print(pic_name)
-    height, width, channels = im.shape[:3]
     print(height, width, channels)
     s_tx2=tx2[i].split('\n')
     s_tx2=s_tx2[1:]
-    print(type(height))
     for j in range(len(s_tx2)-1):
         v=s_tx2[j].split()
         print('==4==')
@@ -73,17 +92,6 @@ for i in range(len(tx2)):
         else:
             with open(output_file, 'a', encoding='UTF-8') as f:
                 f.writelines(R[0]+z+R[1]+z+R[2]+z+R[2]+z+R[4]+z+R[5]+' 0.0'+z+R[6]+z+R[7]+' 0.0'+23*io+z+R[8]+z+R[9]+z+R[10]+z+R[11]+io+z+R[12]+z+R[13]+54*io+' 1\n')
-"""
-        T=transpose(Vs,height,width)
-        if j==0:
-            with open(output_file, 'a', encoding='UTF-8') as f:
-                f.writelines('# '+ folder_name + 'T_' + pic_name+'\n')
-            with open(output_file, 'a', encoding='UTF-8') as f:
-                f.writelines(T[0]+z+T[1]+z+T[2]+z+T[2]+z+T[4]+z+T[5]+' 0.0'+z+T[6]+z+T[7]+' 0.0'+23*io+z+T[8]+z+T[9]+z+T[10]+z+T[11]+io+z+T[12]+z+T[13]+54*io+' 1\n')
-        else:
-            with open(output_file, 'a', encoding='UTF-8') as f:
-                f.writelines(T[0]+z+T[1]+z+T[2]+z+T[2]+z+T[4]+z+T[5]+' 0.0'+z+T[6]+z+T[7]+' 0.0'+23*io+z+T[8]+z+T[9]+z+T[10]+z+T[11]+io+z+T[12]+z+T[13]+54*io+' 1\n')
-"""
-
+        
 #print(23*io)
 #print(54*io+' 1')
